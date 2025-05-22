@@ -1,26 +1,212 @@
-@import "tailwindcss";
+@import "tailwindcss/preflight";
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 270 76% 53%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 270 50% 96%;
+  --secondary-foreground: 270 76% 53%;
+  --muted: 270 50% 96%;
+  --muted-foreground: 270 40% 46%;
+  --accent: 270 76% 53%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 270 50% 96%;
+  --input: 270 50% 96%;
+  --ring: 270 76% 53%;
+  --radius: 0.5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --background: 270 50% 3%;
+  --foreground: 270 40% 98%;
+  --card: 270 50% 3%;
+  --card-foreground: 270 40% 98%;
+  --popover: 270 50% 3%;
+  --popover-foreground: 270 40% 98%;
+  --primary: 270 76% 53%;
+  --primary-foreground: 270 40% 98%;
+  --secondary: 270 50% 10%;
+  --secondary-foreground: 270 40% 98%;
+  --muted: 270 50% 10%;
+  --muted-foreground: 270 40% 65%;
+  --accent: 270 76% 53%;
+  --accent-foreground: 270 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 270 40% 98%;
+  --border: 270 50% 10%;
+  --input: 270 50% 10%;
+  --ring: 270 76% 53%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  @apply border-border;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-background text-foreground min-h-screen;
+  font-feature-settings: "rlig" 1, "calt" 1;
+  background: linear-gradient(
+    135deg,
+    hsl(270 50% 3%),
+    hsl(270 50% 5%),
+    hsl(270 50% 3%)
+  );
+  background-attachment: fixed;
+}
+
+/* Radix UI Theme Overrides */
+[data-radix-theme] {
+  --default-font-family: var(--font-inter);
+}
+
+/* Card styles */
+[data-radix-theme] [data-radix-card] {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--card)),
+    hsl(var(--card) / 0.8),
+    hsl(var(--card))
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid hsl(var(--border) / 0.1);
+  box-shadow: 0 4px 6px -1px hsl(var(--card) / 0.1),
+    0 2px 4px -1px hsl(var(--card) / 0.06);
+  transition: all 0.2s ease;
+}
+
+[data-radix-theme] [data-radix-card]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px hsl(var(--card) / 0.1),
+    0 4px 6px -2px hsl(var(--card) / 0.05);
+}
+
+/* Exercise card specific styles */
+[data-radix-theme] [data-radix-card][data-exercise-card] {
+  background: linear-gradient(
+    135deg,
+    hsl(270 50% 8%),
+    hsl(270 50% 6%),
+    hsl(270 50% 8%)
+  );
+  border: 1px solid hsl(270 50% 20% / 0.1);
+}
+
+/* Button styles */
+[data-radix-theme] [data-radix-button] {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary)),
+    hsl(var(--primary) / 0.8),
+    hsl(var(--primary))
+  );
+  border: none;
+  color: hsl(var(--primary-foreground));
+  transition: all 0.2s ease;
+}
+
+[data-radix-theme] [data-radix-button]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+}
+
+[data-radix-theme] [data-radix-button][data-variant="ghost"] {
+  background: transparent;
+  color: hsl(var(--foreground));
+}
+
+[data-radix-theme] [data-radix-button][data-variant="ghost"]:hover {
+  background: hsl(var(--primary) / 0.1);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Container styles */
+[data-radix-theme] [data-radix-container] {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--background) / 0.5),
+    hsl(var(--background) / 0.3)
+  );
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius);
+  padding: 2rem;
+}
+
+/* Progress bar styles */
+[data-radix-theme] [data-radix-progress] {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary)),
+    hsl(var(--primary) / 0.8),
+    hsl(var(--primary))
+  );
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* Link styles */
+[data-radix-theme] a,
+[data-radix-theme] a:link,
+[data-radix-theme] a:visited,
+[data-radix-theme] a:hover,
+[data-radix-theme] a:active,
+[data-radix-theme] a:focus {
+  text-decoration: none !important;
+  color: inherit !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+}
+
+/* Card link styles */
+[data-radix-theme] a [data-radix-card],
+[data-radix-theme] a:link [data-radix-card],
+[data-radix-theme] a:visited [data-radix-card],
+[data-radix-theme] a:hover [data-radix-card],
+[data-radix-theme] a:active [data-radix-card],
+[data-radix-theme] a:focus [data-radix-card] {
+  text-decoration: none !important;
+  color: inherit !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  transform: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  cursor: pointer !important;
+}
+
+[data-radix-theme] a:hover [data-radix-card] {
+  text-decoration: none !important;
+  color: inherit !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 15px -3px hsl(var(--card) / 0.1),
+    0 4px 6px -2px hsl(var(--card) / 0.05) !important;
+}
+
+/* Ensure proper stacking context for Radix UI components */
+[data-radix-popper-content-wrapper] {
+  z-index: 50;
 }

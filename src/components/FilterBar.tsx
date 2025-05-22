@@ -1,12 +1,63 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import {
+  BarChartIcon,
+  ClockIcon,
+  HeartIcon,
+  CheckIcon,
+} from "@radix-ui/react-icons";
+import { Box, Card, Flex, Text, Select, Checkbox } from "@radix-ui/themes";
+
+type Benefit =
+  | "Reduces stress"
+  | "Improves focus"
+  | "Enhances performance under pressure"
+  | "Promotes better sleep"
+  | "Reduces anxiety"
+  | "Helps with stress management"
+  | "Reduces tension"
+  | "Improves oxygen flow"
+  | "Promotes relaxation"
+  | "Balances energy"
+  | "Boosts immune system"
+  | "Increases energy"
+  | "Improves stress resilience"
+  | "Promotes calmness"
+  | "Reduces heart rate"
+  | "Improves sleep quality"
+  | "Reduces fatigue"
+  | "Improves emotional regulation"
+  | "Sets positive tone for day"
+  | "Prepares body for rest";
+
+const BENEFITS: { value: Benefit; label: string }[] = [
+  { value: "Reduces stress", label: "Stress Relief" },
+  { value: "Improves focus", label: "Focus" },
+  { value: "Increases energy", label: "Energy" },
+  { value: "Promotes better sleep", label: "Sleep" },
+  { value: "Reduces anxiety", label: "Anxiety Relief" },
+];
+
+const DIFFICULTIES = [
+  { value: "beginner", label: "Beginner" },
+  { value: "intermediate", label: "Intermediate" },
+  { value: "advanced", label: "Advanced" },
+];
+
+const DURATIONS = [
+  { value: "0-60", label: "Under 1 minute" },
+  { value: "60-120", label: "1-2 minutes" },
+  { value: "120-180", label: "2-3 minutes" },
+  { value: "180-300", label: "3-5 minutes" },
+  { value: "300-9999", label: "Over 5 minutes" },
+];
 
 interface FilterBarProps {
   onFilterChange: (filters: {
-    difficulty: string;
-    duration: string;
-    benefits: string[];
+    difficulty: string[];
+    duration: string[];
+    benefits: Benefit[];
     showFavorites: boolean;
   }) => void;
   showFavorites: boolean;
@@ -16,11 +67,14 @@ export default function FilterBar({
   onFilterChange,
   showFavorites,
 }: FilterBarProps) {
-  const [difficulty, setDifficulty] = useState<string>("");
-  const [duration, setDuration] = useState<string>("");
-  const [benefits, setBenefits] = useState<string[]>([]);
+  const [difficulties, setDifficulties] = useState<string[]>([]);
+  const [durations, setDurations] = useState<string[]>([]);
+  const [benefits, setBenefits] = useState<Benefit[]>([]);
   const [showFavs, setShowFavs] = useState<boolean>(showFavorites);
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [openDifficulty, setOpenDifficulty] = useState(false);
+  const [openDuration, setOpenDuration] = useState(false);
+  const [openBenefits, setOpenBenefits] = useState(false);
 
   // Handle initial mount
   useEffect(() => {
@@ -31,13 +85,13 @@ export default function FilterBar({
   useEffect(() => {
     if (isMounted) {
       onFilterChange({
-        difficulty,
-        duration,
+        difficulty: difficulties,
+        duration: durations,
         benefits,
         showFavorites: showFavs,
       });
     }
-  }, [difficulty, duration, benefits, showFavs, isMounted]);
+  }, [difficulties, durations, benefits, showFavs, isMounted]);
 
   // Handle showFavorites prop changes
   useEffect(() => {
@@ -46,162 +100,309 @@ export default function FilterBar({
     }
   }, [showFavorites, isMounted]);
 
-  const handleBenefitChange = (benefit: string) => {
-    setBenefits((prev) =>
-      prev.includes(benefit)
-        ? prev.filter((b) => b !== benefit)
-        : [...prev, benefit]
-    );
+  const handleOpenChange = (
+    open: boolean,
+    setOpen: (open: boolean) => void,
+    event?: Event
+  ) => {
+    // Only close if clicking outside or pressing escape
+    if (!open && event?.type === "click") {
+      const target = event.target as HTMLElement;
+      if (target.closest("[data-radix-select-content]")) {
+        return;
+      }
+    }
+    setOpen(open);
+  };
+
+  const handleDifficultyChange = (value: string) => {
+    if (difficulties.includes(value)) {
+      setDifficulties(difficulties.filter((d) => d !== value));
+    } else {
+      setDifficulties([...difficulties, value]);
+    }
+  };
+
+  const handleDurationChange = (value: string) => {
+    if (durations.includes(value)) {
+      setDurations(durations.filter((d) => d !== value));
+    } else {
+      setDurations([...durations, value]);
+    }
+  };
+
+  const handleBenefitChange = (benefit: Benefit) => {
+    if (benefits.includes(benefit)) {
+      setBenefits(benefits.filter((b) => b !== benefit));
+    } else {
+      setBenefits([...benefits, benefit]);
+    }
   };
 
   if (!isMounted) {
     return (
-      <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+      <Card size="2" mb="4">
+        <Flex gap="4" direction={{ initial: "column", md: "row" }}>
+          <Box style={{ flex: 1 }}>
+            <Text as="label" size="2" weight="medium" mb="1">
               Difficulty
-            </label>
-            <select
-              value=""
-              className="w-full p-2 border border-gray-300 rounded-md"
-              disabled
-            >
-              <option value="">All</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            </Text>
+            <Select.Root defaultValue="" disabled>
+              <Select.Trigger />
+              <Select.Content>
+                <Select.Item value="">None</Select.Item>
+              </Select.Content>
+            </Select.Root>
+          </Box>
+          <Box style={{ flex: 1 }}>
+            <Text as="label" size="2" weight="medium" mb="1">
               Duration
-            </label>
-            <select
-              value=""
-              className="w-full p-2 border border-gray-300 rounded-md"
-              disabled
-            >
-              <option value="">All</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            </Text>
+            <Select.Root defaultValue="" disabled>
+              <Select.Trigger />
+              <Select.Content>
+                <Select.Item value="">None</Select.Item>
+              </Select.Content>
+            </Select.Root>
+          </Box>
+          <Box style={{ flex: 1 }}>
+            <Text as="label" size="2" weight="medium" mb="1">
               Benefits
-            </label>
-            <div className="space-y-2">
-              {[
-                "Stress Relief",
-                "Focus",
-                "Energy",
-                "Sleep",
-                "Anxiety Relief",
-              ].map((benefit) => (
-                <label key={benefit} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={false}
-                    disabled
-                    className="mr-2"
-                  />
-                  {benefit}
-                </label>
-              ))}
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            </Text>
+            <Select.Root defaultValue="" disabled>
+              <Select.Trigger />
+              <Select.Content>
+                <Select.Item value="">None</Select.Item>
+              </Select.Content>
+            </Select.Root>
+          </Box>
+          <Box style={{ flex: 1 }}>
+            <Text as="label" size="2" weight="medium" mb="1">
               Favorites
-            </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={false}
-                disabled
-                className="mr-2"
-              />
-              Show Favorites Only
-            </label>
-          </div>
-        </div>
-      </div>
+            </Text>
+            <Flex gap="2" align="center">
+              <Checkbox disabled />
+              <Text size="2">Show Favorites Only</Text>
+            </Flex>
+          </Box>
+        </Flex>
+      </Card>
     );
   }
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Difficulty
-          </label>
-          <select
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="">All</option>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
-        </div>
+    <Card
+      size="2"
+      mb="4"
+      style={{
+        textDecoration: "none",
+        color: "inherit",
+        userSelect: "none",
+        WebkitTapHighlightColor: "transparent",
+        transform: "none",
+        boxShadow: "none",
+      }}
+    >
+      <Flex gap="4" direction={{ initial: "column", md: "row" }} align="center">
+        <Box style={{ flex: 1, width: "100%" }}>
+          <Flex gap="2" align="center" mb="1" style={{ width: "100%" }}>
+            <Text as="label" size="2" weight="medium" aria-label="Difficulty">
+              <BarChartIcon width="16" height="16" />
+            </Text>
+            <Box style={{ width: "100%" }}>
+              <Select.Root
+                defaultValue=""
+                onValueChange={handleDifficultyChange}
+                open={openDifficulty}
+                onOpenChange={(open) =>
+                  handleOpenChange(open, setOpenDifficulty)
+                }
+              >
+                <Select.Trigger style={{ width: "100%" }}>
+                  <Text>
+                    {difficulties.length === 0
+                      ? "None"
+                      : `${difficulties.length} selected`}
+                  </Text>
+                </Select.Trigger>
+                <Select.Content
+                  position="popper"
+                  sideOffset={5}
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                    userSelect: "none",
+                    WebkitTapHighlightColor: "transparent",
+                    transform: "none",
+                    boxShadow: "none",
+                  }}
+                >
+                  {DIFFICULTIES.map(({ value, label }) => (
+                    <Select.Item
+                      key={value}
+                      value={value}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                        userSelect: "none",
+                        WebkitTapHighlightColor: "transparent",
+                        transform: "none",
+                        boxShadow: "none",
+                      }}
+                    >
+                      <Flex gap="2" align="center">
+                        <Text>{label}</Text>
+                        {difficulties.includes(value) && (
+                          <CheckIcon width="16" height="16" />
+                        )}
+                      </Flex>
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Root>
+            </Box>
+          </Flex>
+        </Box>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Duration
-          </label>
-          <select
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="">All</option>
-            <option value="0-300">0-5 minutes</option>
-            <option value="300-600">5-10 minutes</option>
-            <option value="600-900">10-15 minutes</option>
-            <option value="900-1200">15-20 minutes</option>
-            <option value="1200-9999">20+ minutes</option>
-          </select>
-        </div>
+        <Box style={{ flex: 1, width: "100%" }}>
+          <Flex gap="2" align="center" mb="1" style={{ width: "100%" }}>
+            <Text as="label" size="2" weight="medium" aria-label="Duration">
+              <ClockIcon width="16" height="16" />
+            </Text>
+            <Box style={{ width: "100%" }}>
+              <Select.Root
+                defaultValue=""
+                onValueChange={handleDurationChange}
+                open={openDuration}
+                onOpenChange={(open) => handleOpenChange(open, setOpenDuration)}
+              >
+                <Select.Trigger style={{ width: "100%" }}>
+                  <Text>
+                    {durations.length === 0
+                      ? "None"
+                      : `${durations.length} selected`}
+                  </Text>
+                </Select.Trigger>
+                <Select.Content
+                  position="popper"
+                  sideOffset={5}
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                    userSelect: "none",
+                    WebkitTapHighlightColor: "transparent",
+                    transform: "none",
+                    boxShadow: "none",
+                  }}
+                >
+                  {DURATIONS.map(({ value, label }) => (
+                    <Select.Item
+                      key={value}
+                      value={value}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                        userSelect: "none",
+                        WebkitTapHighlightColor: "transparent",
+                        transform: "none",
+                        boxShadow: "none",
+                      }}
+                    >
+                      <Flex gap="2" align="center">
+                        <Text>{label}</Text>
+                        {durations.includes(value) && (
+                          <CheckIcon width="16" height="16" />
+                        )}
+                      </Flex>
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Root>
+            </Box>
+          </Flex>
+        </Box>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Benefits
-          </label>
-          <div className="space-y-2">
-            {[
-              "Stress Relief",
-              "Focus",
-              "Energy",
-              "Sleep",
-              "Anxiety Relief",
-            ].map((benefit) => (
-              <label key={benefit} className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={benefits.includes(benefit)}
-                  onChange={() => handleBenefitChange(benefit)}
-                  className="mr-2"
+        <Box style={{ flex: 1, width: "100%" }}>
+          <Flex gap="2" align="center" mb="1" style={{ width: "100%" }}>
+            <Text as="label" size="2" weight="medium" aria-label="Benefits">
+              <HeartIcon width="16" height="16" />
+            </Text>
+            <Box style={{ width: "100%" }}>
+              <Select.Root
+                defaultValue=""
+                onValueChange={handleBenefitChange}
+                open={openBenefits}
+                onOpenChange={(open) => handleOpenChange(open, setOpenBenefits)}
+              >
+                <Select.Trigger style={{ width: "100%" }}>
+                  <Text>
+                    {benefits.length === 0
+                      ? "None"
+                      : `${benefits.length} selected`}
+                  </Text>
+                </Select.Trigger>
+                <Select.Content
+                  position="popper"
+                  sideOffset={5}
+                  style={{
+                    textDecoration: "none",
+                    color: "inherit",
+                    userSelect: "none",
+                    WebkitTapHighlightColor: "transparent",
+                    transform: "none",
+                    boxShadow: "none",
+                  }}
+                >
+                  {BENEFITS.map(({ value, label }) => (
+                    <Select.Item
+                      key={value}
+                      value={value}
+                      style={{
+                        textDecoration: "none",
+                        color: "inherit",
+                        userSelect: "none",
+                        WebkitTapHighlightColor: "transparent",
+                        transform: "none",
+                        boxShadow: "none",
+                      }}
+                    >
+                      <Flex gap="2" align="center">
+                        <Text>{label}</Text>
+                        {benefits.includes(value) && (
+                          <CheckIcon width="16" height="16" />
+                        )}
+                      </Flex>
+                    </Select.Item>
+                  ))}
+                </Select.Content>
+              </Select.Root>
+            </Box>
+          </Flex>
+        </Box>
+
+        <Box style={{ flex: 1 }}>
+          <Flex gap="2" align="center" mb="1">
+            <Text as="label" size="2" weight="medium" aria-label="Favorites">
+              {showFavs ? (
+                <HeartIcon
+                  width="16"
+                  height="16"
+                  style={{ color: "red", fill: "red" }}
                 />
-                {benefit}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Favorites
-          </label>
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={showFavs}
-              onChange={(e) => setShowFavs(e.target.checked)}
-              className="mr-2"
-            />
-            Show Favorites Only
-          </label>
-        </div>
-      </div>
-    </div>
+              ) : (
+                <HeartIcon width="16" height="16" />
+              )}
+            </Text>
+            <Flex gap="2" align="center">
+              <Checkbox
+                checked={showFavs}
+                onCheckedChange={(checked) => setShowFavs(checked === true)}
+              />
+              <Text size="2">Favorites</Text>
+            </Flex>
+          </Flex>
+        </Box>
+      </Flex>
+    </Card>
   );
 }

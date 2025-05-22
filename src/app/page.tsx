@@ -1,104 +1,119 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { exercises } from "@/data/exercises";
+import { Container, Heading, Text, Grid } from "@radix-ui/themes";
 import ExerciseCard from "@/components/ExerciseCard";
 import FilterBar from "@/components/FilterBar";
-import { BreathingExercise } from "@/types/exercise";
 import { getFavorites } from "@/utils/localStorage";
+import { exercises } from "@/data/exercises";
+import type { BreathingExercise } from "@/types/exercise";
 
 export default function Home() {
-  const [filteredExercises, setFilteredExercises] =
-    useState<BreathingExercise[]>(exercises);
+  const [filteredExercises, setFilteredExercises] = useState<
+    BreathingExercise[]
+  >([]);
   const [showFavorites, setShowFavorites] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
-  // Handle initial mount
   useEffect(() => {
     setIsMounted(true);
-    const storedFavorites = getFavorites();
-    setFavorites(storedFavorites);
+    setFavorites(getFavorites());
   }, []);
 
   const handleFilterChange = useCallback(
     (filters: {
-      difficulty: string;
-      duration: string;
+      difficulty: string[];
+      duration: string[];
       benefits: string[];
       showFavorites: boolean;
     }) => {
-      let filtered = [...exercises];
-
-      if (filters.difficulty) {
-        filtered = filtered.filter(
-          (exercise) => exercise.difficulty === filters.difficulty
-        );
-      }
-
-      if (filters.duration) {
-        const [min, max] = filters.duration.split("-").map(Number);
-        filtered = filtered.filter((exercise) => {
-          const totalTime =
-            (exercise.inhaleTime + exercise.exhaleTime) * exercise.repetitions;
-          return totalTime >= min && totalTime <= max;
-        });
-      }
-
-      if (filters.benefits.length > 0) {
-        filtered = filtered.filter((exercise) =>
-          filters.benefits.some((benefit) =>
-            exercise.benefits.includes(benefit)
-          )
-        );
-      }
-
-      if (filters.showFavorites) {
-        filtered = filtered.filter((exercise) =>
-          favorites.includes(exercise.id)
-        );
-      }
-
-      setFilteredExercises(filtered);
       setShowFavorites(filters.showFavorites);
+      setFilteredExercises(
+        exercises.filter((exercise) => {
+          const matchesDifficulty =
+            filters.difficulty.length === 0 ||
+            filters.difficulty.includes(exercise.difficulty);
+          const matchesDuration =
+            filters.duration.length === 0 ||
+            filters.duration.some((duration) => {
+              const [min, max] = duration.split("-").map(Number);
+              const exerciseDuration =
+                (exercise.inhaleTime + exercise.exhaleTime) *
+                exercise.repetitions;
+              return exerciseDuration >= min && exerciseDuration <= max;
+            });
+          const matchesBenefits =
+            filters.benefits.length === 0 ||
+            filters.benefits.every((benefit) =>
+              exercise.benefits.includes(benefit)
+            );
+          const matchesFavorites =
+            !filters.showFavorites || favorites.includes(exercise.id);
+
+          return (
+            matchesDifficulty &&
+            matchesDuration &&
+            matchesBenefits &&
+            matchesFavorites
+          );
+        })
+      );
     },
     [favorites]
   );
 
+  const handleFavoriteChange = useCallback(() => {
+    setFavorites(getFavorites());
+  }, []);
+
   if (!isMounted) {
     return (
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-center mb-8">
+      <Container size="2" py="6">
+        <Heading size="6" mb="4">
           Breathing Exercises
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-          {exercises.map((exercise) => (
-            <ExerciseCard key={exercise.id} exercise={exercise} />
+        </Heading>
+        <Text size="2" color="gray" mb="6">
+          Find the perfect breathing exercise for your needs
+        </Text>
+        <FilterBar
+          onFilterChange={handleFilterChange}
+          showFavorites={showFavorites}
+        />
+        <Grid columns={{ initial: "1", sm: "2", md: "3" }} gap="4">
+          {exercises.slice(0, 6).map((exercise) => (
+            <ExerciseCard
+              key={exercise.id}
+              exercise={exercise}
+              onFavoriteChange={handleFavoriteChange}
+            />
           ))}
-        </div>
-      </main>
+        </Grid>
+      </Container>
     );
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mb-8">
+    <Container size="2" py="6">
+      <Heading size="6" mb="4">
         Breathing Exercises
-      </h1>
+      </Heading>
+      <Text size="2" color="gray" mb="6">
+        Find the perfect breathing exercise for your needs
+      </Text>
       <FilterBar
         onFilterChange={handleFilterChange}
         showFavorites={showFavorites}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+      <Grid columns={{ initial: "1", sm: "2", md: "3" }} gap="4">
         {filteredExercises.map((exercise) => (
-          <ExerciseCard key={exercise.id} exercise={exercise} />
+          <ExerciseCard
+            key={exercise.id}
+            exercise={exercise}
+            onFavoriteChange={handleFavoriteChange}
+          />
         ))}
-      </div>
-      {filteredExercises.length === 0 && (
-        <p className="text-center text-gray-500 mt-8">
-          No exercises found matching your criteria.
-        </p>
-      )}
-    </main>
+      </Grid>
+    </Container>
   );
 }

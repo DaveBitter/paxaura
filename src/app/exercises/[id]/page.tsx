@@ -1,48 +1,162 @@
-import { exercises } from "@/data/exercises";
-import { notFound } from "next/navigation";
-import BreathingAnimation from "@/components/BreathingAnimation";
+"use client";
 
-interface PageProps {
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeftIcon, HeartIcon } from "@radix-ui/react-icons";
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Heading,
+  Text,
+} from "@radix-ui/themes";
+import BreathingAnimation from "@/components/BreathingAnimation";
+import { exercises } from "@/data/exercises";
+import { toggleFavorite, isFavorite } from "@/utils/localStorage";
+import type { BreathingExercise } from "@/types/exercise";
+
+interface ExercisePageProps {
   params: {
     id: string;
   };
 }
 
-export default function ExercisePage({ params }: PageProps) {
-  const exercise = exercises.find((e) => e.id === params.id);
+export default function ExercisePage({ params }: ExercisePageProps) {
+  const router = useRouter();
+  const [exercise, setExercise] = useState<BreathingExercise | null>(null);
+  const [favorite, setFavorite] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
 
-  if (!exercise) {
-    notFound();
+  useEffect(() => {
+    setIsMounted(true);
+    const foundExercise = exercises.find((e) => e.id === params.id);
+    if (foundExercise) {
+      setExercise(foundExercise);
+      setFavorite(isFavorite(foundExercise.id));
+    }
+  }, [params.id]);
+
+  const handleFavoriteClick = () => {
+    if (exercise) {
+      const newFavorites = toggleFavorite(exercise.id);
+      setFavorite(newFavorites.includes(exercise.id));
+    }
+  };
+
+  if (!isMounted || !exercise) {
+    return (
+      <Container size="2" py="6">
+        <Button variant="ghost" onClick={() => router.back()} size="2">
+          <ArrowLeftIcon width="20" height="20" />
+          <Text size="2">Back</Text>
+        </Button>
+        <Card size="2" mt="4">
+          <Flex direction="column" gap="4" align="center">
+            <Heading size="6">Loading...</Heading>
+          </Flex>
+        </Card>
+      </Container>
+    );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {exercise.name}
-          </h1>
-          <p className="text-xl text-gray-600 mb-6">{exercise.description}</p>
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
-            {exercise.benefits.map((benefit, index) => (
-              <span
-                key={index}
-                className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
-              >
-                {benefit}
-              </span>
-            ))}
-          </div>
-        </div>
+    <Container size="2" py="6">
+      <Button variant="ghost" onClick={() => router.back()} size="2">
+        <ArrowLeftIcon width="20" height="20" />
+        <Text size="2">Back</Text>
+      </Button>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <BreathingAnimation
-            inhaleTime={exercise.inhaleTime}
-            exhaleTime={exercise.exhaleTime}
-            repetitions={exercise.repetitions}
-          />
-        </div>
-      </div>
-    </main>
+      <Card size="2" mt="4">
+        <Flex direction="column" gap="4">
+          <Flex justify="between" align="center">
+            <Heading size="6">{exercise.name}</Heading>
+            <Button
+              variant="ghost"
+              color={favorite ? "red" : "gray"}
+              onClick={handleFavoriteClick}
+              size="2"
+            >
+              <HeartIcon width="20" height="20" />
+            </Button>
+          </Flex>
+
+          <Text size="2" color="gray">
+            {exercise.description}
+          </Text>
+
+          <Flex gap="4" wrap="wrap">
+            <Box
+              style={{
+                backgroundColor: "var(--gray-3)",
+                padding: "8px 16px",
+                borderRadius: "4px",
+              }}
+            >
+              <Text size="2" weight="medium">
+                {exercise.difficulty}
+              </Text>
+            </Box>
+            <Box
+              style={{
+                backgroundColor: "var(--gray-3)",
+                padding: "8px 16px",
+                borderRadius: "4px",
+              }}
+            >
+              <Text size="2" weight="medium">
+                {exercise.inhaleTime}s inhale
+              </Text>
+            </Box>
+            <Box
+              style={{
+                backgroundColor: "var(--gray-3)",
+                padding: "8px 16px",
+                borderRadius: "4px",
+              }}
+            >
+              <Text size="2" weight="medium">
+                {exercise.exhaleTime}s exhale
+              </Text>
+            </Box>
+            <Box
+              style={{
+                backgroundColor: "var(--gray-3)",
+                padding: "8px 16px",
+                borderRadius: "4px",
+              }}
+            >
+              <Text size="2" weight="medium">
+                {exercise.repetitions} reps
+              </Text>
+            </Box>
+          </Flex>
+
+          <Flex gap="2" wrap="wrap">
+            {exercise.benefits.map((benefit: string) => (
+              <Box
+                key={benefit}
+                style={{
+                  backgroundColor: "var(--gray-3)",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                }}
+              >
+                <Text size="1">{benefit}</Text>
+              </Box>
+            ))}
+          </Flex>
+
+          <Box mt="4">
+            <BreathingAnimation
+              inhaleTime={exercise.inhaleTime}
+              exhaleTime={exercise.exhaleTime}
+              repetitions={exercise.repetitions}
+            />
+          </Box>
+        </Flex>
+      </Card>
+    </Container>
   );
 }
