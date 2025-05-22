@@ -59,7 +59,7 @@ export default function ExerciseCard({
   }
 
   return (
-    <div style={{ display: "block" }}>
+    <div style={{ display: "block", position: "relative" }}>
       <Link href={`/exercises/${exercise.id}`} style={{ display: "contents" }}>
         <Card size="2" data-exercise-card>
           <Flex direction="column" gap="3" p="4">
@@ -67,16 +67,6 @@ export default function ExerciseCard({
               <Text size="4" weight="medium">
                 {exercise.name}
               </Text>
-              <Button variant="ghost" onClick={handleFavoriteClick} size="1">
-                <HeartIcon
-                  width="16"
-                  height="16"
-                  style={{
-                    fill: favorite ? "var(--purple-9)" : "none",
-                    stroke: "var(--purple-9)",
-                  }}
-                />
-              </Button>
             </Flex>
 
             <Text size="2" color="gray">
@@ -121,6 +111,32 @@ export default function ExerciseCard({
           </Flex>
         </Card>
       </Link>
+      <Button
+        variant="ghost"
+        onClick={handleFavoriteClick}
+        size="1"
+        style={{
+          position: "absolute",
+          top: "16px",
+          right: "16px",
+          zIndex: 1,
+          padding: "8px",
+          borderRadius: "50%",
+          backgroundColor: favorite ? "var(--purple-3)" : "var(--gray-1)",
+          border: favorite ? "1px solid var(--purple-9)" : "none",
+        }}
+      >
+        <HeartIcon
+          width="16"
+          height="16"
+          style={{
+            fill: favorite ? "var(--purple-9)" : "none",
+            stroke: "var(--purple-9)",
+            transition: "all 0.2s ease-in-out",
+            transform: favorite ? "scale(1.1)" : "scale(1)",
+          }}
+        />
+      </Button>
     </div>
   );
 }

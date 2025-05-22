@@ -9,17 +9,20 @@ import { exercises } from "@/data/exercises";
 import type { BreathingExercise } from "@/types/exercise";
 
 export default function Home() {
-  const [filteredExercises, setFilteredExercises] = useState<
-    BreathingExercise[]
-  >([]);
+  const [filteredExercises, setFilteredExercises] =
+    useState<BreathingExercise[]>(exercises);
   const [showFavorites, setShowFavorites] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
     setIsMounted(true);
-    setFavorites(getFavorites());
-  }, []);
+    const favs = getFavorites();
+    setFavorites(favs);
+    if (showFavorites) {
+      setFilteredExercises(exercises.filter((ex) => favs.includes(ex.id)));
+    }
+  }, [showFavorites]);
 
   const handleFilterChange = useCallback(
     (filters: {

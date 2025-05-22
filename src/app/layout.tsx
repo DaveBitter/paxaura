@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider>
-          <Container size="2" py="6">
+          <Container size="3" py="6">
             <Flex justify="end" mb="4">
               <ThemeToggle />
             </Flex>
