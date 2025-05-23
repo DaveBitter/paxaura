@@ -8,14 +8,18 @@ interface BreathingAnimationProps {
   inhaleTime: number;
   exhaleTime: number;
   repetitions: number;
+  inhaleHoldTime?: number; // Optional hold after inhale
+  exhaleHoldTime?: number; // Optional hold after exhale
 }
 
-type Phase = "inhale" | "exhale" | "rest";
+type Phase = "inhale" | "inhaleHold" | "exhale" | "exhaleHold" | "rest";
 
 export default function BreathingAnimation({
   inhaleTime,
   exhaleTime,
   repetitions,
+  inhaleHoldTime = 0,
+  exhaleHoldTime = 0,
 }: BreathingAnimationProps) {
   // State management
   const [phase, setPhase] = useState<Phase>("inhale");
@@ -44,7 +48,23 @@ export default function BreathingAnimation({
     const currentTime = Date.now();
     const elapsed = (currentTime - startTimeRef.current) / 1000;
     const currentPhase = phaseRef.current;
-    const phaseDuration = currentPhase === "inhale" ? inhaleTime : exhaleTime;
+
+    let phaseDuration = 0;
+    switch (currentPhase) {
+      case "inhale":
+        phaseDuration = inhaleTime;
+        break;
+      case "inhaleHold":
+        phaseDuration = inhaleHoldTime;
+        break;
+      case "exhale":
+        phaseDuration = exhaleTime;
+        break;
+      case "exhaleHold":
+        phaseDuration = exhaleHoldTime;
+        break;
+    }
+
     const remaining = Math.max(0, phaseDuration - elapsed);
 
     if (remaining <= 0) {
@@ -78,38 +98,58 @@ export default function BreathingAnimation({
     const currentPhase = phaseRef.current;
     const currentRepCount = currentRepRef.current;
 
-    if (currentPhase === "inhale") {
-      setPhase("exhale");
-      setTimeLeft(exhaleTime);
-      setElapsedTime(0);
-      startTimeRef.current = Date.now();
-      if (!isMuted) {
-        createTickSound();
-      }
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      animationFrameRef.current = requestAnimationFrame(animate);
-    } else if (currentPhase === "exhale") {
-      if (currentRepCount < repetitions) {
-        setPhase("inhale");
-        setTimeLeft(inhaleTime);
-        setElapsedTime(0);
-        setCurrentRep((prev) => prev + 1);
-        startTimeRef.current = Date.now();
-        if (!isMuted) {
-          createTickSound();
+    switch (currentPhase) {
+      case "inhale":
+        if (inhaleHoldTime > 0) {
+          setPhase("inhaleHold");
+          setTimeLeft(inhaleHoldTime);
+        } else {
+          setPhase("exhale");
+          setTimeLeft(exhaleTime);
         }
-        if (animationFrameRef.current) {
-          cancelAnimationFrame(animationFrameRef.current);
+        break;
+      case "inhaleHold":
+        setPhase("exhale");
+        setTimeLeft(exhaleTime);
+        break;
+      case "exhale":
+        if (exhaleHoldTime > 0) {
+          setPhase("exhaleHold");
+          setTimeLeft(exhaleHoldTime);
+        } else if (currentRepCount < repetitions) {
+          setPhase("inhale");
+          setTimeLeft(inhaleTime);
+          setCurrentRep((prev) => prev + 1);
+        } else {
+          setPhase("rest");
+          setIsActive(false);
+          startTimeRef.current = null;
+          return;
         }
-        animationFrameRef.current = requestAnimationFrame(animate);
-      } else {
-        setPhase("rest");
-        setIsActive(false);
-        startTimeRef.current = null;
-      }
+        break;
+      case "exhaleHold":
+        if (currentRepCount < repetitions) {
+          setPhase("inhale");
+          setTimeLeft(inhaleTime);
+          setCurrentRep((prev) => prev + 1);
+        } else {
+          setPhase("rest");
+          setIsActive(false);
+          startTimeRef.current = null;
+          return;
+        }
+        break;
     }
+
+    setElapsedTime(0);
+    startTimeRef.current = Date.now();
+    if (!isMuted) {
+      createTickSound();
+    }
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    animationFrameRef.current = requestAnimationFrame(animate);
   };
 
   // Control handlers
@@ -144,14 +184,20 @@ export default function BreathingAnimation({
     const baseSize = 150;
     const maxSize = 300;
 
-    if (phase === "inhale") {
-      const progress = elapsedTime / inhaleTime;
-      return baseSize + (maxSize - baseSize) * progress;
-    } else if (phase === "exhale") {
-      const progress = elapsedTime / exhaleTime;
-      return maxSize - (maxSize - baseSize) * progress;
+    switch (phase) {
+      case "inhale":
+        const inhaleProgress = elapsedTime / inhaleTime;
+        return baseSize + (maxSize - baseSize) * inhaleProgress;
+      case "inhaleHold":
+        return maxSize;
+      case "exhale":
+        const exhaleProgress = elapsedTime / exhaleTime;
+        return maxSize - (maxSize - baseSize) * exhaleProgress;
+      case "exhaleHold":
+        return baseSize;
+      default:
+        return baseSize;
     }
-    return baseSize;
   };
 
   // Phase text
@@ -159,8 +205,12 @@ export default function BreathingAnimation({
     switch (phase) {
       case "inhale":
         return "Breathe In";
+      case "inhaleHold":
+        return "Hold";
       case "exhale":
         return "Breathe Out";
+      case "exhaleHold":
+        return "Hold";
       default:
         return "Complete";
     }

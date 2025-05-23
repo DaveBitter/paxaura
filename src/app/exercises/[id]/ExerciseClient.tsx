@@ -146,6 +146,8 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
             <BreathingAnimation
               inhaleTime={exercise.inhaleTime}
               exhaleTime={exercise.exhaleTime}
+              inhaleHoldTime={exercise.inhaleHoldTime}
+              exhaleHoldTime={exercise.exhaleHoldTime}
               repetitions={exercise.repetitions}
             />
           </Box>

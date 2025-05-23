@@ -8,7 +8,9 @@ export const exercises: BreathingExercise[] = [
     description:
       "A technique used by Navy SEALs to maintain calm and focus. Equal duration for inhale, hold, exhale, and hold.",
     inhaleTime: 4,
+    inhaleHoldTime: 4,
     exhaleTime: 4,
+    exhaleHoldTime: 4,
     repetitions: 5,
     benefits: [
       "Reduces stress",
@@ -23,6 +25,7 @@ export const exercises: BreathingExercise[] = [
     description:
       "A natural tranquilizer for the nervous system. Inhale for 4, hold for 7, exhale for 8.",
     inhaleTime: 4,
+    inhaleHoldTime: 7,
     exhaleTime: 8,
     repetitions: 4,
     benefits: [
