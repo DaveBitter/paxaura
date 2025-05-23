@@ -8,11 +8,6 @@ import {
   ArrowDownIcon,
   LoopIcon,
   BarChartIcon,
-  Cross2Icon,
-  MoonIcon,
-  LightningBoltIcon,
-  ReloadIcon,
-  TargetIcon,
   StarIcon,
 } from "@radix-ui/react-icons";
 import { Box, Card, Flex, Text, Button, Grid } from "@radix-ui/themes";
@@ -52,7 +47,7 @@ export default function ExerciseCard({
             {exercise.name}
           </Text>
           <Text size="2" color="gray">
-            {exercise.description}
+            {exercise.shortDescription}
           </Text>
           <Flex gap="2" mt="2">
             <Flex gap="1" align="center">
@@ -91,7 +86,7 @@ export default function ExerciseCard({
             </Flex>
 
             <Text size="2" color="gray">
-              {exercise.description}
+              {exercise.shortDescription}
             </Text>
 
             <Grid columns={{ initial: "2", sm: "2" }} gap="2">

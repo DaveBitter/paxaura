@@ -248,8 +248,9 @@ export default function BreathingAnimation({
               height: `${getCircleSize()}px`,
               opacity: phase === "rest" ? 0.5 : 1,
               background:
-                "linear-gradient(135deg, var(--purple-9), var(--violet-9))",
-              boxShadow: "0 0 20px rgba(0, 0, 0, 0.1)",
+                "linear-gradient(135deg, rgb(147, 51, 234), rgb(168, 85, 247))",
+              boxShadow:
+                "0 0 30px rgba(147, 51, 234, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1)",
               borderRadius: "50%",
               aspectRatio: "1 / 1",
               display: "flex",
