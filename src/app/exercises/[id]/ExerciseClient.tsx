@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeftIcon, HeartIcon } from "@radix-ui/react-icons";
+import {
+  ArrowLeftIcon,
+  HeartIcon,
+  BarChartIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  LoopIcon,
+} from "@radix-ui/react-icons";
 import {
   Box,
   Button,
@@ -12,6 +19,7 @@ import {
   Heading,
   Text,
 } from "@radix-ui/themes";
+import Link from "next/link";
 import BreathingAnimation from "@/components/BreathingAnimation";
 import { toggleFavorite, isFavorite } from "@/utils/localStorage";
 import type { BreathingExercise } from "@/types/exercise";
@@ -88,9 +96,12 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                 borderRadius: "4px",
               }}
             >
-              <Text size="2" weight="medium">
-                {exercise.difficulty}
-              </Text>
+              <Flex gap="2" align="center">
+                <BarChartIcon width="16" height="16" />
+                <Text size="2" weight="medium">
+                  {exercise.difficulty}
+                </Text>
+              </Flex>
             </Box>
             <Box
               style={{
@@ -99,9 +110,12 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                 borderRadius: "4px",
               }}
             >
-              <Text size="2" weight="medium">
-                {exercise.inhaleTime}s inhale
-              </Text>
+              <Flex gap="2" align="center">
+                <ArrowUpIcon width="16" height="16" />
+                <Text size="2" weight="medium">
+                  {exercise.inhaleTime}s inhale
+                </Text>
+              </Flex>
             </Box>
             <Box
               style={{
@@ -110,9 +124,12 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                 borderRadius: "4px",
               }}
             >
-              <Text size="2" weight="medium">
-                {exercise.exhaleTime}s exhale
-              </Text>
+              <Flex gap="2" align="center">
+                <ArrowDownIcon width="16" height="16" />
+                <Text size="2" weight="medium">
+                  {exercise.exhaleTime}s exhale
+                </Text>
+              </Flex>
             </Box>
             <Box
               style={{
@@ -121,9 +138,12 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                 borderRadius: "4px",
               }}
             >
-              <Text size="2" weight="medium">
-                {exercise.repetitions} reps
-              </Text>
+              <Flex gap="2" align="center">
+                <LoopIcon width="16" height="16" />
+                <Text size="2" weight="medium">
+                  {exercise.repetitions} reps
+                </Text>
+              </Flex>
             </Box>
           </Flex>
 
@@ -132,15 +152,32 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
               <Box
                 key={benefit}
                 style={{
-                  backgroundColor: "var(--gray-3)",
+                  background:
+                    "linear-gradient(135deg, var(--purple-9), var(--violet-9))",
                   padding: "4px 8px",
                   borderRadius: "4px",
                 }}
               >
-                <Text size="1">{benefit}</Text>
+                <Text size="1" style={{ color: "white" }}>
+                  {benefit}
+                </Text>
               </Box>
             ))}
           </Flex>
+
+          <Link
+            href="/learn"
+            style={{
+              color: "var(--purple-9)",
+              textDecoration: "none",
+              fontSize: "14px",
+              fontWeight: 500,
+              display: "inline-block",
+              marginTop: "8px",
+            }}
+          >
+            Learn More →
+          </Link>
 
           <Box mt="4">
             <BreathingAnimation

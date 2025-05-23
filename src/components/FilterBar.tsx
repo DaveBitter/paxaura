@@ -6,6 +6,9 @@ import {
   ClockIcon,
   HeartIcon,
   CheckIcon,
+  StarIcon,
+  TimerIcon,
+  Cross2Icon,
 } from "@radix-ui/react-icons";
 import { Box, Card, Flex, Text, Select, Checkbox } from "@radix-ui/themes";
 
@@ -31,26 +34,78 @@ type Benefit =
   | "Sets positive tone for day"
   | "Prepares body for rest";
 
-const BENEFITS: { value: Benefit; label: string }[] = [
-  { value: "Reduces stress", label: "Stress Relief" },
-  { value: "Improves focus", label: "Focus" },
-  { value: "Increases energy", label: "Energy" },
-  { value: "Promotes better sleep", label: "Sleep" },
-  { value: "Reduces anxiety", label: "Anxiety Relief" },
+const BENEFITS: { value: Benefit; label: string; icon: React.ReactNode }[] = [
+  {
+    value: "Reduces stress",
+    label: "Stress Relief",
+    icon: <Cross2Icon width="16" height="16" />,
+  },
+  {
+    value: "Improves focus",
+    label: "Focus",
+    icon: <BarChartIcon width="16" height="16" />,
+  },
+  {
+    value: "Increases energy",
+    label: "Energy",
+    icon: <StarIcon width="16" height="16" />,
+  },
+  {
+    value: "Promotes better sleep",
+    label: "Sleep",
+    icon: <TimerIcon width="16" height="16" />,
+  },
+  {
+    value: "Reduces anxiety",
+    label: "Anxiety Relief",
+    icon: <HeartIcon width="16" height="16" />,
+  },
 ];
 
 const DIFFICULTIES = [
-  { value: "beginner", label: "Beginner" },
-  { value: "intermediate", label: "Intermediate" },
-  { value: "advanced", label: "Advanced" },
+  {
+    value: "beginner",
+    label: "Beginner",
+    icon: <BarChartIcon width="16" height="16" />,
+  },
+  {
+    value: "intermediate",
+    label: "Intermediate",
+    icon: <BarChartIcon width="16" height="16" />,
+  },
+  {
+    value: "advanced",
+    label: "Advanced",
+    icon: <BarChartIcon width="16" height="16" />,
+  },
 ];
 
 const DURATIONS = [
-  { value: "0-60", label: "Under 1 minute" },
-  { value: "60-120", label: "1-2 minutes" },
-  { value: "120-180", label: "2-3 minutes" },
-  { value: "180-300", label: "3-5 minutes" },
-  { value: "300-9999", label: "Over 5 minutes" },
+  {
+    value: "0-60",
+    label: "Under 1 minute",
+    icon: <ClockIcon width="16" height="16" />,
+  },
+  {
+    value: "60-120",
+    label: "1-2 minutes",
+    icon: <ClockIcon width="16" height="16" />,
+  },
+  {
+    value: "120-180",
+    label: "2-3 minutes",
+    icon: <ClockIcon width="16" height="16" />,
+  },
+  {
+    value: "180-300",
+    label: "3-5 minutes",
+    icon: <ClockIcon width="16" height="16" />,
+  },
+  {
+    value: "300-9999",
+    label: "Over 5 minutes",
+    icon: <ClockIcon width="16" height="16" />,
+  },
 ];
 
 interface FilterBarProps {
@@ -237,7 +292,7 @@ export default function FilterBar({
                     boxShadow: "none",
                   }}
                 >
-                  {DIFFICULTIES.map(({ value, label }) => (
+                  {DIFFICULTIES.map(({ value, label, icon }) => (
                     <Select.Item
                       key={value}
                       value={value}
@@ -251,6 +306,7 @@ export default function FilterBar({
                       }}
                     >
                       <Flex gap="2" align="center">
+                        {icon}
                         <Text>{label}</Text>
                         {difficulties.includes(value) && (
                           <CheckIcon width="16" height="16" />
@@ -295,7 +351,7 @@ export default function FilterBar({
                     boxShadow: "none",
                   }}
                 >
-                  {DURATIONS.map(({ value, label }) => (
+                  {DURATIONS.map(({ value, label, icon }) => (
                     <Select.Item
                       key={value}
                       value={value}
@@ -309,6 +365,7 @@ export default function FilterBar({
                       }}
                     >
                       <Flex gap="2" align="center">
+                        {icon}
                         <Text>{label}</Text>
                         {durations.includes(value) && (
                           <CheckIcon width="16" height="16" />
@@ -353,7 +410,7 @@ export default function FilterBar({
                     boxShadow: "none",
                   }}
                 >
-                  {BENEFITS.map(({ value, label }) => (
+                  {BENEFITS.map(({ value, label, icon }) => (
                     <Select.Item
                       key={value}
                       value={value}
@@ -367,6 +424,7 @@ export default function FilterBar({
                       }}
                     >
                       <Flex gap="2" align="center">
+                        {icon}
                         <Text>{label}</Text>
                         {benefits.includes(value) && (
                           <CheckIcon width="16" height="16" />

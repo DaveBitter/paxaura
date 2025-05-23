@@ -2,7 +2,17 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createTickSound, initAudioContext } from "@/utils/audio";
-import { Card, Button } from "@radix-ui/themes";
+import { Card, Button, Flex, Text } from "@radix-ui/themes";
+import {
+  ArrowUpIcon,
+  ArrowDownIcon,
+  PauseIcon,
+  CheckIcon,
+  ResetIcon,
+  SpeakerLoudIcon,
+  SpeakerOffIcon,
+} from "@radix-ui/react-icons";
+import React from "react";
 
 interface BreathingAnimationProps {
   inhaleTime: number;
@@ -200,19 +210,25 @@ export default function BreathingAnimation({
     }
   };
 
-  // Phase text
-  const getPhaseText = () => {
+  // Phase text and icon
+  const getPhaseContent = () => {
     switch (phase) {
       case "inhale":
-        return "Breathe In";
+        return {
+          text: "Breathe In",
+          icon: <ArrowUpIcon width="24" height="24" />,
+        };
       case "inhaleHold":
-        return "Hold";
+        return { text: "Hold", icon: <PauseIcon width="24" height="24" /> };
       case "exhale":
-        return "Breathe Out";
+        return {
+          text: "Breathe Out",
+          icon: <ArrowDownIcon width="24" height="24" />,
+        };
       case "exhaleHold":
-        return "Hold";
+        return { text: "Hold", icon: <PauseIcon width="24" height="24" /> };
       default:
-        return "Complete";
+        return { text: "Complete", icon: <CheckIcon width="24" height="24" /> };
     }
   };
 
@@ -241,9 +257,14 @@ export default function BreathingAnimation({
               justifyContent: "center",
             }}
           >
-            <h2 className="text-2xl font-semibold tracking-wide text-white select-none">
-              {getPhaseText()}
-            </h2>
+            <div className="flex flex-col items-center gap-2">
+              {React.cloneElement(getPhaseContent().icon, {
+                style: { color: "white" },
+              })}
+              <h2 className="text-2xl font-semibold tracking-wide text-white select-none">
+                {getPhaseContent().text}
+              </h2>
+            </div>
           </div>
         </div>
 
@@ -281,7 +302,10 @@ export default function BreathingAnimation({
                 color: "white",
               }}
             >
-              Reset
+              <Flex gap="2" align="center">
+                <ResetIcon width="16" height="16" />
+                <Text>Reset</Text>
+              </Flex>
             </Button>
           )}
           <Button
@@ -293,7 +317,14 @@ export default function BreathingAnimation({
               color: "var(--gray-11)",
             }}
           >
-            {isMuted ? "🔇 Unmute" : "🔊 Mute"}
+            <Flex gap="2" align="center">
+              {isMuted ? (
+                <SpeakerOffIcon width="16" height="16" />
+              ) : (
+                <SpeakerLoudIcon width="16" height="16" />
+              )}
+              <Text>{isMuted ? "Unmute" : "Mute"}</Text>
+            </Flex>
           </Button>
         </div>
       </div>

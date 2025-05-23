@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Container, Heading, Text, Grid } from "@radix-ui/themes";
+import { Container, Heading, Text, Grid, Box } from "@radix-ui/themes";
 import ExerciseCard from "@/components/ExerciseCard";
 import FilterBar from "@/components/FilterBar";
 import { getFavorites } from "@/utils/localStorage";
@@ -14,6 +14,7 @@ export default function Home() {
   const [showFavorites, setShowFavorites] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     setIsMounted(true);
@@ -53,17 +54,37 @@ export default function Home() {
             );
           const matchesFavorites =
             !filters.showFavorites || favorites.includes(exercise.id);
+          const matchesSearch =
+            searchQuery === "" ||
+            exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            exercise.description
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
 
           return (
             matchesDifficulty &&
             matchesDuration &&
             matchesBenefits &&
-            matchesFavorites
+            matchesFavorites &&
+            matchesSearch
           );
         })
       );
     },
-    [favorites]
+    [favorites, searchQuery]
+  );
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+      handleFilterChange({
+        difficulty: [],
+        duration: [],
+        benefits: [],
+        showFavorites,
+      });
+    },
+    [handleFilterChange, showFavorites]
   );
 
   const handleFavoriteChange = useCallback(() => {
@@ -83,6 +104,23 @@ export default function Home() {
           onFilterChange={handleFilterChange}
           showFavorites={showFavorites}
         />
+        <Box mb="4">
+          <input
+            type="text"
+            placeholder="Search exercises..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            style={{
+              width: "100%",
+              padding: "8px 12px",
+              borderRadius: "4px",
+              border: "1px solid var(--gray-6)",
+              backgroundColor: "var(--gray-2)",
+              color: "var(--gray-12)",
+              fontSize: "14px",
+            }}
+          />
+        </Box>
         <Grid columns={{ initial: "1", sm: "2", md: "3" }} gap="4">
           {exercises.slice(0, 6).map((exercise) => (
             <ExerciseCard
@@ -108,7 +146,24 @@ export default function Home() {
         onFilterChange={handleFilterChange}
         showFavorites={showFavorites}
       />
-      <Grid columns={{ initial: "1", sm: "2", md: "3" }} gap="4">
+      <Box mb="4">
+        <input
+          type="text"
+          placeholder="Search exercises..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          style={{
+            width: "100%",
+            padding: "8px 12px",
+            borderRadius: "4px",
+            border: "1px solid var(--gray-6)",
+            backgroundColor: "var(--gray-2)",
+            color: "var(--gray-12)",
+            fontSize: "14px",
+          }}
+        />
+      </Box>
+      <Grid columns={{ initial: "1", sm: "2" }} gap="4">
         {filteredExercises.map((exercise) => (
           <ExerciseCard
             key={exercise.id}

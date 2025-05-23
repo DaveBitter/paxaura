@@ -2,8 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { HeartIcon } from "@radix-ui/react-icons";
-import { Box, Card, Flex, Text, Button } from "@radix-ui/themes";
+import {
+  HeartIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  LoopIcon,
+  BarChartIcon,
+  Cross2Icon,
+  MoonIcon,
+  LightningBoltIcon,
+  ReloadIcon,
+  TargetIcon,
+  StarIcon,
+} from "@radix-ui/react-icons";
+import { Box, Card, Flex, Text, Button, Grid } from "@radix-ui/themes";
 import { toggleFavorite, isFavorite } from "@/utils/localStorage";
 import type { BreathingExercise } from "@/types/exercise";
 
@@ -43,15 +55,24 @@ export default function ExerciseCard({
             {exercise.description}
           </Text>
           <Flex gap="2" mt="2">
-            <Text size="2" color="gray">
-              {exercise.inhaleTime}s inhale
-            </Text>
-            <Text size="2" color="gray">
-              {exercise.exhaleTime}s exhale
-            </Text>
-            <Text size="2" color="gray">
-              {exercise.repetitions} reps
-            </Text>
+            <Flex gap="1" align="center">
+              <ArrowUpIcon width="14" height="14" />
+              <Text size="2" color="gray">
+                {exercise.inhaleTime}s inhale
+              </Text>
+            </Flex>
+            <Flex gap="1" align="center">
+              <ArrowDownIcon width="14" height="14" />
+              <Text size="2" color="gray">
+                {exercise.exhaleTime}s exhale
+              </Text>
+            </Flex>
+            <Flex gap="1" align="center">
+              <LoopIcon width="14" height="14" />
+              <Text size="2" color="gray">
+                {exercise.repetitions} reps
+              </Text>
+            </Flex>
           </Flex>
         </Flex>
       </Card>
@@ -73,7 +94,7 @@ export default function ExerciseCard({
               {exercise.description}
             </Text>
 
-            <Flex gap="2" wrap="wrap">
+            <Grid columns={{ initial: "2", sm: "2" }} gap="2">
               {exercise.benefits.slice(0, 2).map((benefit) => (
                 <Box
                   key={benefit}
@@ -84,14 +105,27 @@ export default function ExerciseCard({
                     borderRadius: "4px",
                   }}
                 >
-                  <Text size="1" style={{ color: "white" }}>
-                    {benefit}
-                  </Text>
+                  <Flex gap="1" align="center" justify="center">
+                    <StarIcon
+                      width="12"
+                      height="12"
+                      style={{ color: "white" }}
+                    />
+                    <Text
+                      size="1"
+                      style={{
+                        color: "white",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      {benefit}
+                    </Text>
+                  </Flex>
                 </Box>
               ))}
-            </Flex>
-
-            <Flex gap="2" align="center">
               <Box
                 style={{
                   background:
@@ -100,14 +134,113 @@ export default function ExerciseCard({
                   borderRadius: "4px",
                 }}
               >
-                <Text size="1" style={{ color: "white" }}>
-                  {exercise.difficulty}
-                </Text>
+                <Flex gap="1" align="center" justify="center">
+                  <BarChartIcon
+                    width="12"
+                    height="12"
+                    style={{ color: "white" }}
+                  />
+                  <Text
+                    size="1"
+                    style={{
+                      color: "white",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "100%",
+                    }}
+                  >
+                    {exercise.difficulty}
+                  </Text>
+                </Flex>
               </Box>
-              <Text size="2" color="gray">
-                {exercise.repetitions} reps
-              </Text>
-            </Flex>
+            </Grid>
+
+            <Grid columns={{ initial: "1", sm: "3" }} gap="2">
+              <Box
+                style={{
+                  background: "var(--gray-3)",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                }}
+              >
+                <Flex gap="1" align="center">
+                  <LoopIcon
+                    width="14"
+                    height="14"
+                    style={{ color: "var(--gray-11)" }}
+                  />
+                  <Text
+                    size="2"
+                    color="gray"
+                    style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "100%",
+                    }}
+                  >
+                    {exercise.repetitions} reps
+                  </Text>
+                </Flex>
+              </Box>
+
+              <Box
+                style={{
+                  background: "var(--gray-3)",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                }}
+              >
+                <Flex gap="1" align="center">
+                  <ArrowUpIcon
+                    width="14"
+                    height="14"
+                    style={{ color: "var(--gray-11)" }}
+                  />
+                  <Text
+                    size="2"
+                    color="gray"
+                    style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "100%",
+                    }}
+                  >
+                    {exercise.inhaleTime}s inhale
+                  </Text>
+                </Flex>
+              </Box>
+
+              <Box
+                style={{
+                  background: "var(--gray-3)",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                }}
+              >
+                <Flex gap="1" align="center">
+                  <ArrowDownIcon
+                    width="14"
+                    height="14"
+                    style={{ color: "var(--gray-11)" }}
+                  />
+                  <Text
+                    size="2"
+                    color="gray"
+                    style={{
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      maxWidth: "100%",
+                    }}
+                  >
+                    {exercise.exhaleTime}s exhale
+                  </Text>
+                </Flex>
+              </Box>
+            </Grid>
           </Flex>
         </Card>
       </Link>
