@@ -9,14 +9,14 @@ import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Breathing Exercises",
+  title: "Paxaura - Breathing Exercises",
   description: "Find the perfect breathing exercise for your needs",
   manifest: "/favicons/manifest.json",
   themeColor: "#000000",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Breathing Exercises",
+    title: "Paxaura - Breathing Exercises",
   },
   viewport: {
     width: "device-width",
