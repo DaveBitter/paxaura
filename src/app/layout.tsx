@@ -21,7 +21,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider>
-          <Container size="3" py="6">
+          <Container
+            size="3"
+            py="6"
+            className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800"
+          >
             <Flex justify="end" mb="4">
               <ThemeToggle />
             </Flex>

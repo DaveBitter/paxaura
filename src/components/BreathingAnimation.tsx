@@ -240,7 +240,7 @@ export default function BreathingAnimation({
     >
       <div className="w-full flex flex-col items-center justify-center p-8 min-h-[500px]">
         {/* Breathing Circle */}
-        <div className="relative w-[300px] h-[300px] flex items-center justify-center overflow-hidden">
+        <div className="relative w-[300px] h-[300px] p-20 flex items-center justify-center overflow-hidden">
           <div
             className="absolute rounded-full flex items-center justify-center"
             style={{
