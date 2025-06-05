@@ -94,12 +94,40 @@ export default function Home() {
   if (!isMounted) {
     return (
       <Container size="2" py="6">
-        <Heading size="6" mb="4">
-          Breathing Exercises
-        </Heading>
-        <Text size="2" color="gray" mb="6">
-          Find the perfect breathing exercise for your needs
-        </Text>
+        <Box mb="6" style={{ textAlign: "center" }}>
+          <Heading
+            size="8"
+            mb="3"
+            style={{
+              background:
+                "linear-gradient(90deg, hsl(270 40% 45%), hsl(270 40% 60%), hsl(270 40% 45%))",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontWeight: "900",
+              letterSpacing: "-0.02em",
+              textShadow: "0 0 30px hsl(270 76% 53% / 0.3)",
+            }}
+          >
+            Breathing Exercises
+          </Heading>
+          <Text
+            size="4"
+            mb="6"
+            style={{
+              background:
+                "linear-gradient(90deg, hsl(270 40% 45%), hsl(270 40% 60%), hsl(270 40% 45%))",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontWeight: "500",
+              letterSpacing: "0.01em",
+              opacity: 0.95,
+            }}
+          >
+            Find the perfect breathing exercise for your needs
+          </Text>
+        </Box>
         <FilterBar
           onFilterChange={handleFilterChange}
           showFavorites={showFavorites}
@@ -136,12 +164,40 @@ export default function Home() {
 
   return (
     <Container size="2" py="6">
-      <Heading size="6" mb="4">
-        Breathing Exercises
-      </Heading>
-      <Text size="2" color="gray" mb="6">
-        Find the perfect breathing exercise for your needs
-      </Text>
+      <Box mb="6" style={{ textAlign: "center" }}>
+        <Heading
+          size="8"
+          mb="3"
+          style={{
+            background:
+              "linear-gradient(90deg, hsl(270 40% 45%), hsl(270 40% 60%), hsl(270 40% 45%))",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontWeight: "900",
+            letterSpacing: "-0.02em",
+            textShadow: "0 0 30px hsl(270 76% 53% / 0.3)",
+          }}
+        >
+          Breathing Exercises
+        </Heading>
+        <Text
+          size="4"
+          mb="6"
+          style={{
+            background:
+              "linear-gradient(90deg, hsl(270 40% 45%), hsl(270 40% 60%), hsl(270 40% 45%))",
+            backgroundClip: "text",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontWeight: "500",
+            letterSpacing: "0.01em",
+            opacity: 0.95,
+          }}
+        >
+          Find the perfect breathing exercise for your needs
+        </Text>
+      </Box>
       <FilterBar
         onFilterChange={handleFilterChange}
         showFavorites={showFavorites}
