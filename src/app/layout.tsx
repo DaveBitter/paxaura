@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { Container, Flex } from "@radix-ui/themes";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import { ViewTransitions } from "next-view-transitions";
@@ -54,12 +55,13 @@ export default function RootLayout({
           <ViewTransitions>
             <Container
               size="3"
-              py="6"
+              p="4"
               className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800"
             >
               <Flex justify="end" mb="4">
                 <ThemeToggle />
               </Flex>
+              <Breadcrumb />
               {children}
             </Container>
           </ViewTransitions>
