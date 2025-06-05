@@ -76,13 +76,32 @@ export default function ExerciseCard({
 
   return (
     <div style={{ display: "block", position: "relative" }}>
-      <Link href={`/exercises/${exercise.id}`} style={{ display: "contents" }}>
+      <Link
+        href={`/exercises/${exercise.id}`}
+        style={{
+          display: "block",
+          textDecoration: "none",
+          color: "inherit",
+          borderRadius: "var(--radius-2)",
+          outline: "none",
+        }}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            window.location.href = `/exercises/${exercise.id}`;
+          }
+        }}
+      >
         <Card
           size="2"
           data-exercise-card
           style={{
             viewTransitionName: `exercise-${exercise.id}`,
+            cursor: "pointer",
+            transition: "all 0.2s ease",
           }}
+          tabIndex={-1}
         >
           <Flex direction="column" gap="3" p="4">
             <Flex justify="between" align="center">
@@ -265,6 +284,16 @@ export default function ExerciseCard({
       <Button
         variant="ghost"
         onClick={handleFavoriteClick}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            const mouseEvent = {
+              preventDefault: () => {},
+              stopPropagation: () => {},
+            } as React.MouseEvent;
+            handleFavoriteClick(mouseEvent);
+          }
+        }}
         size="1"
         style={{
           position: "absolute",
@@ -276,6 +305,7 @@ export default function ExerciseCard({
           backgroundColor: favorite ? "var(--purple-3)" : "var(--gray-1)",
           border: favorite ? "1px solid var(--purple-9)" : "none",
         }}
+        aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
       >
         <HeartIcon
           width="16"
