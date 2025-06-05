@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { Footer } from "@/components/Footer";
 import { Container, Flex } from "@radix-ui/themes";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import { ViewTransitions } from "next-view-transitions";
@@ -63,6 +64,7 @@ export default function RootLayout({
               </Flex>
               <Breadcrumb />
               {children}
+              <Footer />
             </Container>
           </ViewTransitions>
         </ThemeProvider>
