@@ -2,11 +2,27 @@ import { Heading, Text, Box, Card, Grid } from "@radix-ui/themes";
 
 export default function TechniquesPage() {
   return (
-    <Box>
-      <Heading size="8" mb="4">
+    <Box
+      style={{
+        viewTransitionName: "learn-techniques",
+      }}
+    >
+      <Heading
+        size="8"
+        mb="4"
+        style={{
+          viewTransitionName: "learn-techniques-title",
+        }}
+      >
         Breathing Techniques
       </Heading>
-      <Text size="3" mb="6">
+      <Text
+        size="3"
+        mb="6"
+        style={{
+          viewTransitionName: "learn-techniques-desc",
+        }}
+      >
         Different breathing techniques serve different purposes. Here are some
         of the most effective methods and when to use them. Each technique has
         its own history, benefits, and specific applications.

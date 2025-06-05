@@ -19,7 +19,7 @@ import {
   Heading,
   Text,
 } from "@radix-ui/themes";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import BreathingAnimation from "@/components/BreathingAnimation";
 import { toggleFavorite, isFavorite } from "@/utils/localStorage";
 import type { BreathingExercise } from "@/types/exercise";
@@ -70,10 +70,23 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
         <Text size="2">Back</Text>
       </Button>
 
-      <Card size="2" mt="4">
+      <Card
+        size="2"
+        mt="4"
+        style={{
+          viewTransitionName: `exercise-${exercise.id}`,
+        }}
+      >
         <Flex direction="column" gap="4">
           <Flex justify="between" align="center">
-            <Heading size="6">{exercise.name}</Heading>
+            <Heading
+              size="6"
+              style={{
+                viewTransitionName: `exercise-title-${exercise.id}`,
+              }}
+            >
+              {exercise.name}
+            </Heading>
             <Button
               variant="ghost"
               color={favorite ? "red" : "gray"}
@@ -84,7 +97,13 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
             </Button>
           </Flex>
 
-          <Text size="2" color="gray">
+          <Text
+            size="2"
+            color="gray"
+            style={{
+              viewTransitionName: `exercise-desc-${exercise.id}`,
+            }}
+          >
             {exercise.description}
           </Text>
 
@@ -94,6 +113,7 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                 backgroundColor: "var(--gray-3)",
                 padding: "8px 16px",
                 borderRadius: "4px",
+                viewTransitionName: `exercise-difficulty-${exercise.id}`,
               }}
             >
               <Flex gap="2" align="center">
@@ -108,6 +128,7 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                 backgroundColor: "var(--gray-3)",
                 padding: "8px 16px",
                 borderRadius: "4px",
+                viewTransitionName: `exercise-inhale-${exercise.id}`,
               }}
             >
               <Flex gap="2" align="center">
@@ -122,6 +143,7 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                 backgroundColor: "var(--gray-3)",
                 padding: "8px 16px",
                 borderRadius: "4px",
+                viewTransitionName: `exercise-exhale-${exercise.id}`,
               }}
             >
               <Flex gap="2" align="center">
@@ -136,6 +158,7 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                 backgroundColor: "var(--gray-3)",
                 padding: "8px 16px",
                 borderRadius: "4px",
+                viewTransitionName: `exercise-reps-${exercise.id}`,
               }}
             >
               <Flex gap="2" align="center">
@@ -148,7 +171,7 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
           </Flex>
 
           <Flex gap="2" wrap="wrap">
-            {exercise.benefits.map((benefit: string) => (
+            {exercise.benefits.map((benefit: string, index: number) => (
               <Box
                 key={benefit}
                 style={{
@@ -156,6 +179,7 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
                     "linear-gradient(135deg, var(--purple-9), var(--violet-9))",
                   padding: "4px 8px",
                   borderRadius: "4px",
+                  viewTransitionName: `exercise-benefit-${exercise.id}-${index}`,
                 }}
               >
                 <Text size="1" style={{ color: "white" }}>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import {
   HeartIcon,
   ArrowUpIcon,
@@ -77,20 +77,38 @@ export default function ExerciseCard({
   return (
     <div style={{ display: "block", position: "relative" }}>
       <Link href={`/exercises/${exercise.id}`} style={{ display: "contents" }}>
-        <Card size="2" data-exercise-card>
+        <Card
+          size="2"
+          data-exercise-card
+          style={{
+            viewTransitionName: `exercise-${exercise.id}`,
+          }}
+        >
           <Flex direction="column" gap="3" p="4">
             <Flex justify="between" align="center">
-              <Text size="4" weight="medium">
+              <Text
+                size="4"
+                weight="medium"
+                style={{
+                  viewTransitionName: `exercise-title-${exercise.id}`,
+                }}
+              >
                 {exercise.name}
               </Text>
             </Flex>
 
-            <Text size="2" color="gray">
+            <Text
+              size="2"
+              color="gray"
+              style={{
+                viewTransitionName: `exercise-desc-${exercise.id}`,
+              }}
+            >
               {exercise.shortDescription}
             </Text>
 
             <Grid columns={{ initial: "2", sm: "2" }} gap="2">
-              {exercise.benefits.slice(0, 2).map((benefit) => (
+              {exercise.benefits.slice(0, 2).map((benefit, index) => (
                 <Box
                   key={benefit}
                   style={{
@@ -98,6 +116,7 @@ export default function ExerciseCard({
                       "linear-gradient(135deg, var(--purple-9), var(--violet-9))",
                     padding: "4px 8px",
                     borderRadius: "4px",
+                    viewTransitionName: `exercise-benefit-${exercise.id}-${index}`,
                   }}
                 >
                   <Flex gap="1" align="center" justify="center">
@@ -127,6 +146,7 @@ export default function ExerciseCard({
                     "linear-gradient(135deg, var(--purple-9), var(--violet-9))",
                   padding: "4px 8px",
                   borderRadius: "4px",
+                  viewTransitionName: `exercise-difficulty-${exercise.id}`,
                 }}
               >
                 <Flex gap="1" align="center" justify="center">
@@ -157,6 +177,7 @@ export default function ExerciseCard({
                   background: "var(--gray-3)",
                   padding: "4px 8px",
                   borderRadius: "4px",
+                  viewTransitionName: `exercise-reps-${exercise.id}`,
                 }}
               >
                 <Flex gap="1" align="center">
@@ -185,6 +206,7 @@ export default function ExerciseCard({
                   background: "var(--gray-3)",
                   padding: "4px 8px",
                   borderRadius: "4px",
+                  viewTransitionName: `exercise-inhale-${exercise.id}`,
                 }}
               >
                 <Flex gap="1" align="center">
@@ -213,6 +235,7 @@ export default function ExerciseCard({
                   background: "var(--gray-3)",
                   padding: "4px 8px",
                   borderRadius: "4px",
+                  viewTransitionName: `exercise-exhale-${exercise.id}`,
                 }}
               >
                 <Flex gap="1" align="center">

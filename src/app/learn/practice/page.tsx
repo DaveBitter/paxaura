@@ -2,11 +2,27 @@ import { Heading, Text, Box, Card, Grid } from "@radix-ui/themes";
 
 export default function PracticePage() {
   return (
-    <Box>
-      <Heading size="8" mb="4">
+    <Box
+      style={{
+        viewTransitionName: "learn-practice",
+      }}
+    >
+      <Heading
+        size="8"
+        mb="4"
+        style={{
+          viewTransitionName: "learn-practice-title",
+        }}
+      >
         Getting Started with Breathing Practice
       </Heading>
-      <Text size="3" mb="6">
+      <Text
+        size="3"
+        mb="6"
+        style={{
+          viewTransitionName: "learn-practice-desc",
+        }}
+      >
         Incorporating breathing exercises into your daily routine can be simple
         and rewarding. Here&apos;s a comprehensive guide to help you establish
         and maintain your practice, with detailed instructions and practical

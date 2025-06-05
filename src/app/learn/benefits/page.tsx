@@ -2,16 +2,31 @@ import { Heading, Text, Box } from "@radix-ui/themes";
 
 export default function BenefitsPage() {
   return (
-    <Box>
-      <Heading size="8" mb="4">
-        The Transformative Power of Breathing Exercises
+    <Box
+      style={{
+        viewTransitionName: "learn-benefits",
+      }}
+    >
+      <Heading
+        size="8"
+        mb="4"
+        style={{
+          viewTransitionName: "learn-benefits-title",
+        }}
+      >
+        Benefits of Breathing Exercises
       </Heading>
-      <Text size="3" mb="6">
-        In our fast-paced world, finding moments of calm and clarity can seem
-        like an impossible task. Yet, the solution might be as simple as taking
-        a deep breath. Regular practice of breathing exercises has emerged as a
-        powerful tool for enhancing both physical and mental well-being,
-        offering benefits that extend far beyond the moments of practice.
+      <Text
+        size="3"
+        mb="6"
+        style={{
+          viewTransitionName: "learn-benefits-desc",
+        }}
+      >
+        Discover how regular breathing practice can improve your physical and
+        mental health. In our fast-paced world, finding moments of calm and
+        clarity can seem like an impossible task. Yet, the solution might be as
+        simple as taking a deep breath.
       </Text>
 
       <Box mb="6">

@@ -2,11 +2,27 @@ import { Heading, Text, Box, Card, Grid } from "@radix-ui/themes";
 
 export default function SciencePage() {
   return (
-    <Box>
-      <Heading size="8" mb="4">
+    <Box
+      style={{
+        viewTransitionName: "learn-science",
+      }}
+    >
+      <Heading
+        size="8"
+        mb="4"
+        style={{
+          viewTransitionName: "learn-science-title",
+        }}
+      >
         The Science Behind Breathing
       </Heading>
-      <Text size="3" mb="6">
+      <Text
+        size="3"
+        mb="6"
+        style={{
+          viewTransitionName: "learn-science-desc",
+        }}
+      >
         Breathing exercises have a profound impact on our body and mind.
         Understanding the science behind these effects can help you make the
         most of your practice. This comprehensive guide explores the
