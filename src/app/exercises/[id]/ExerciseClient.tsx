@@ -89,11 +89,28 @@ export default function ExerciseClient({ exercise }: ExerciseClientProps) {
             </Heading>
             <Button
               variant="ghost"
-              color={favorite ? "red" : "gray"}
               onClick={handleFavoriteClick}
-              size="2"
+              size="1"
+              style={{
+                padding: "8px",
+                borderRadius: "50%",
+                backgroundColor: favorite ? "var(--purple-3)" : "var(--gray-1)",
+                border: favorite ? "1px solid var(--purple-9)" : "none",
+              }}
+              aria-label={
+                favorite ? "Remove from favorites" : "Add to favorites"
+              }
             >
-              <HeartIcon width="20" height="20" />
+              <HeartIcon
+                width="16"
+                height="16"
+                style={{
+                  fill: favorite ? "var(--purple-9)" : "none",
+                  stroke: "var(--purple-9)",
+                  transition: "all 0.2s ease-in-out",
+                  transform: favorite ? "scale(1.1)" : "scale(1)",
+                }}
+              />
             </Button>
           </Flex>
 
