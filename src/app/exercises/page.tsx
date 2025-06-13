@@ -4,7 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import { Container, Heading, Text, Grid, Box } from "@radix-ui/themes";
 import ExerciseCard from "@/components/ExerciseCard";
 import FilterBar from "@/components/FilterBar";
-import { getFavorites } from "@/utils/localStorage";
+import {
+  getFavorites,
+  getDailyHighlightedExercise,
+} from "@/utils/localStorage";
 import { exercises } from "@/data/exercises";
 import type { BreathingExercise } from "@/types/exercise";
 
@@ -15,11 +18,14 @@ export default function ExercisesPage() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [dailyHighlightId, setDailyHighlightId] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
     const favs = getFavorites();
     setFavorites(favs);
+    const highlightId = getDailyHighlightedExercise(exercises);
+    setDailyHighlightId(highlightId);
     if (showFavorites) {
       setFilteredExercises(exercises.filter((ex) => favs.includes(ex.id)));
     }
@@ -33,45 +39,54 @@ export default function ExercisesPage() {
       showFavorites: boolean;
     }) => {
       setShowFavorites(filters.showFavorites);
-      setFilteredExercises(
-        exercises.filter((exercise) => {
-          const matchesDifficulty =
-            filters.difficulty.length === 0 ||
-            filters.difficulty.includes(exercise.difficulty);
-          const matchesDuration =
-            filters.duration.length === 0 ||
-            filters.duration.some((duration) => {
-              const [min, max] = duration.split("-").map(Number);
-              const exerciseDuration =
-                (exercise.inhaleTime + exercise.exhaleTime) *
-                exercise.repetitions;
-              return exerciseDuration >= min && exerciseDuration <= max;
-            });
-          const matchesBenefits =
-            filters.benefits.length === 0 ||
-            filters.benefits.every((benefit) =>
-              exercise.benefits.includes(benefit)
-            );
-          const matchesFavorites =
-            !filters.showFavorites || favorites.includes(exercise.id);
-          const matchesSearch =
-            searchQuery === "" ||
-            exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            exercise.description
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase());
-
-          return (
-            matchesDifficulty &&
-            matchesDuration &&
-            matchesBenefits &&
-            matchesFavorites &&
-            matchesSearch
+      let filtered = exercises.filter((exercise) => {
+        const matchesDifficulty =
+          filters.difficulty.length === 0 ||
+          filters.difficulty.includes(exercise.difficulty);
+        const matchesDuration =
+          filters.duration.length === 0 ||
+          filters.duration.some((duration) => {
+            const [min, max] = duration.split("-").map(Number);
+            const exerciseDuration =
+              (exercise.inhaleTime + exercise.exhaleTime) *
+              exercise.repetitions;
+            return exerciseDuration >= min && exerciseDuration <= max;
+          });
+        const matchesBenefits =
+          filters.benefits.length === 0 ||
+          filters.benefits.every((benefit) =>
+            exercise.benefits.includes(benefit)
           );
-        })
-      );
+        const matchesFavorites =
+          !filters.showFavorites || favorites.includes(exercise.id);
+        const matchesSearch =
+          searchQuery === "" ||
+          exercise.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          exercise.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
+
+        return (
+          matchesDifficulty &&
+          matchesDuration &&
+          matchesBenefits &&
+          matchesFavorites &&
+          matchesSearch
+        );
+      });
+
+      // Sort to put the daily highlighted exercise first
+      if (dailyHighlightId) {
+        filtered = filtered.sort((a, b) => {
+          if (a.id === dailyHighlightId) return -1;
+          if (b.id === dailyHighlightId) return 1;
+          return 0;
+        });
+      }
+
+      setFilteredExercises(filtered);
     },
-    [favorites, searchQuery]
+    [favorites, searchQuery, dailyHighlightId]
   );
 
   const handleSearchChange = useCallback(
@@ -90,6 +105,15 @@ export default function ExercisesPage() {
   const handleFavoriteChange = useCallback(() => {
     setFavorites(getFavorites());
   }, []);
+
+  // Sort exercises for initial display (putting highlighted exercise first)
+  const sortedExercises = dailyHighlightId
+    ? [...exercises].sort((a, b) => {
+        if (a.id === dailyHighlightId) return -1;
+        if (b.id === dailyHighlightId) return 1;
+        return 0;
+      })
+    : exercises;
 
   if (!isMounted) {
     return (
@@ -121,14 +145,34 @@ export default function ExercisesPage() {
             }}
           />
         </Box>
-        <Grid columns={{ initial: "1", sm: "2", md: "3" }} gap="4">
-          {exercises.slice(0, 6).map((exercise) => (
+
+        {/* Daily Highlighted Exercise - Full Width */}
+        {dailyHighlightId && (
+          <Box mb="6">
             <ExerciseCard
-              key={exercise.id}
-              exercise={exercise}
+              key={`highlighted-${dailyHighlightId}`}
+              exercise={
+                sortedExercises.find((ex) => ex.id === dailyHighlightId)!
+              }
               onFavoriteChange={handleFavoriteChange}
+              isHighlighted={true}
             />
-          ))}
+          </Box>
+        )}
+
+        {/* Regular Grid - Excluding Highlighted Exercise */}
+        <Grid columns={{ initial: "1", sm: "2", md: "3" }} gap="4">
+          {sortedExercises
+            .filter((exercise) => exercise.id !== dailyHighlightId)
+            .slice(0, dailyHighlightId ? 5 : 6)
+            .map((exercise) => (
+              <ExerciseCard
+                key={exercise.id}
+                exercise={exercise}
+                onFavoriteChange={handleFavoriteChange}
+                isHighlighted={false}
+              />
+            ))}
         </Grid>
       </Container>
     );
@@ -163,14 +207,34 @@ export default function ExercisesPage() {
           }}
         />
       </Box>
+
+      {/* Daily Highlighted Exercise - Full Width */}
+      {dailyHighlightId &&
+        filteredExercises.some((ex) => ex.id === dailyHighlightId) && (
+          <Box mb="6">
+            <ExerciseCard
+              key={`highlighted-${dailyHighlightId}`}
+              exercise={
+                filteredExercises.find((ex) => ex.id === dailyHighlightId)!
+              }
+              onFavoriteChange={handleFavoriteChange}
+              isHighlighted={true}
+            />
+          </Box>
+        )}
+
+      {/* Regular Grid - Excluding Highlighted Exercise */}
       <Grid columns={{ initial: "1", sm: "2" }} gap="4">
-        {filteredExercises.map((exercise) => (
-          <ExerciseCard
-            key={exercise.id}
-            exercise={exercise}
-            onFavoriteChange={handleFavoriteChange}
-          />
-        ))}
+        {filteredExercises
+          .filter((exercise) => exercise.id !== dailyHighlightId)
+          .map((exercise) => (
+            <ExerciseCard
+              key={exercise.id}
+              exercise={exercise}
+              onFavoriteChange={handleFavoriteChange}
+              isHighlighted={false}
+            />
+          ))}
       </Grid>
     </Container>
   );

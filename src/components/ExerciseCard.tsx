@@ -17,11 +17,13 @@ import type { BreathingExercise } from "@/types/exercise";
 interface ExerciseCardProps {
   exercise: BreathingExercise;
   onFavoriteChange?: () => void;
+  isHighlighted?: boolean;
 }
 
 export default function ExerciseCard({
   exercise,
   onFavoriteChange,
+  isHighlighted = false,
 }: ExerciseCardProps) {
   const [favorite, setFavorite] = useState<boolean>(false);
   const [isMounted, setIsMounted] = useState<boolean>(false);
@@ -74,8 +76,43 @@ export default function ExerciseCard({
     );
   }
 
+  const cardStyle = {
+    viewTransitionName: `exercise-${exercise.id}`,
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    ...(isHighlighted && {
+      background: "linear-gradient(135deg, var(--purple-2), var(--violet-2))",
+      border: "2px solid var(--purple-6)",
+      boxShadow: "0 0 20px var(--purple-4)",
+    }),
+  };
+
   return (
     <div style={{ display: "block", position: "relative" }}>
+      {isHighlighted && (
+        <Box
+          style={{
+            position: "absolute",
+            top: "-8px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 2,
+            background:
+              "linear-gradient(135deg, var(--purple-9), var(--violet-9))",
+            color: "white",
+            padding: "4px 12px",
+            borderRadius: "12px",
+            fontSize: "12px",
+            fontWeight: "500",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <Flex gap="1" align="center">
+            <StarIcon width="12" height="12" />
+            Today&apos;s Highlight
+          </Flex>
+        </Box>
+      )}
       <Link
         href={`/exercises/${exercise.id}`}
         style={{
@@ -93,16 +130,7 @@ export default function ExerciseCard({
           }
         }}
       >
-        <Card
-          size="2"
-          data-exercise-card
-          style={{
-            viewTransitionName: `exercise-${exercise.id}`,
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-          }}
-          tabIndex={-1}
-        >
+        <Card size="2" data-exercise-card style={cardStyle} tabIndex={-1}>
           <Flex direction="column" gap="3" p="4">
             <Flex justify="between" align="center">
               <Text
@@ -110,6 +138,7 @@ export default function ExerciseCard({
                 weight="medium"
                 style={{
                   viewTransitionName: `exercise-title-${exercise.id}`,
+                  ...(isHighlighted && { color: "var(--purple-11)" }),
                 }}
               >
                 {exercise.name}
@@ -297,7 +326,7 @@ export default function ExerciseCard({
         size="1"
         style={{
           position: "absolute",
-          top: "16px",
+          top: isHighlighted ? "24px" : "16px",
           right: "16px",
           zIndex: 1,
           padding: "8px",
